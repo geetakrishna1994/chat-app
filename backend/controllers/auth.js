@@ -10,6 +10,7 @@ import {
   createAccessToken,
   createRefreshToken,
   verifyAccessToken,
+  verifyRefreshToken,
 } from "../utilities/token.js";
 import { generateKeys } from "../utilities/encryption.js";
 
@@ -52,32 +53,25 @@ export const login = async (req, res) => {
   const otp = generateOTP(process.env.OTP_LENGTH);
   const accessToken = createAccessToken(phoneNumber);
   const refreshToken = createRefreshToken(phoneNumber);
-  let publicKey;
   // ~~~~~~ update in Auth collection ~~~~~~ //
 
   const existingUser = await Auth.findOne({ phoneNumber });
   if (existingUser) {
     await existingUser.updateOne({ otp, refreshToken });
-    publicKey = existingUser.publicKey;
   } else {
-    const { publicKey, privateKey } = generateKeys();
     await Auth.create({
       phoneNumber,
       otp,
       refreshToken,
-      publicKey,
-      privateKey,
     });
   }
   console.log(otp);
   console.log(accessToken);
-  console.log(publicKey);
   res.status(200).send({
     phoneNumber,
     accessToken,
     refreshToken,
     otp,
-    publicKey,
   });
 };
 
@@ -130,4 +124,11 @@ export const verifyOTP = async (req, res) => {
     });
 
   return res.status(200).json(user);
+};
+
+export const getNewToken = (req, res) => {
+  const { refreshToken } = req.query;
+  const data = verifyRefreshToken(refreshToken);
+  const newAccessToken = createAccessToken(data.phoneNumber);
+  res.status(200).json({ accessToken: newAccessToken });
 };

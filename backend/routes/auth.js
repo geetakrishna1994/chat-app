@@ -12,4 +12,6 @@ router.post(
   asyncHandler(authController.verifyOTP)
 );
 
+router.get("/new-token", authController.getNewToken);
+
 export default router;

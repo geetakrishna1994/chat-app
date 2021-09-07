@@ -14,3 +14,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6I
     "phoneNumber" : "9952050503",
     "otp" : "2172"
 }
+
+###
+get http://localhost:8800/auth/new-token?refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzEwMzYyNjksImV4cCI6MTYzMTAzNjI5OX0.4wNHd7yJwIXTLxID9nH6snpXqiR_ltK_sdAHKkFTqkI
+
+###
+
+get http://localhost:8800/user/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzEwMzcwNTIsImV4cCI6MTYzMTAzODA1Mn0.5jxnWD1TUGNWoSTnbu4NUVekSZ_g47_ZyYNYRnWRnbw
+
+###
+
+get http://localhost:8800/user/9952050503
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzEwMzcwNTIsImV4cCI6MTYzMTAzODA1Mn0.5jxnWD1TUGNWoSTnbu4NUVekSZ_g47_ZyYNYRnWRnbw

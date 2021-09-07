@@ -18,14 +18,6 @@ const authSchema = Schema(
       type: Number,
       required: true,
     },
-    privateKey: {
-      type: String,
-      required: true,
-    },
-    publicKey: {
-      type: String,
-      required: true,
-    },
   },
   { timestamps: true }
 );

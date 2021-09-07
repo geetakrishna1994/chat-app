@@ -5,6 +5,7 @@ import helmet from "helmet";
 import { PageNotFoundError } from "../utilities/Errors.js";
 //routers
 import authRouter from "../routes/auth.js";
+import userRouter from "../routes/user.js";
 
 //initialize app
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.json());
 // routes
 
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
 
 app.use("*", (req, res, next) => {
   throw new PageNotFoundError();

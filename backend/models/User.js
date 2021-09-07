@@ -26,6 +26,14 @@ const userSchema = Schema(
       type: String,
       enum: ["online", "offline"],
     },
+
+    conversations: [
+      {
+        conversationId: { type: Schema.Types.ObjectId, ref: "Conversation" },
+        recipientId: { type: Schema.Types.ObjectId, ref: "User" },
+        unReadCount: { type: Number, default: 0 },
+      },
+    ],
   },
   { timestamps: true }
 );
