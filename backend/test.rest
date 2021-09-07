@@ -1,0 +1,16 @@
+post http://localhost:8800/auth/login
+Content-Type: application/json
+
+{
+    "phoneNumber" : "9952050503"
+}
+
+###
+post http://localhost:8800/auth/verify-otp
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzA5OTY0MjgsImV4cCI6MTYzMDk5NzQyOH0.KItLdsuSHW9A07vPUfuHe66AsF6afIJnS_4yzN1TIX8
+
+{
+    "phoneNumber" : "9952050503",
+    "otp" : "2172"
+}
