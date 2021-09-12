@@ -30,7 +30,7 @@ export const verifyAccessToken = (token) => {
     const data = jwt.verify(token, accessTokenSecret);
     return data;
   } catch (err) {
-    throw new AuthenticationError(err.name, err);
+    throw new AuthenticationError("ERR_ACCESS_TOKEN_EXPIRED", err.name);
   }
 };
 
@@ -39,6 +39,6 @@ export const verifyRefreshToken = (token) => {
     const data = jwt.verify(token, refreshTokenSecret);
     return data;
   } catch (err) {
-    throw new AuthenticationError(err.name, err);
+    throw new AuthenticationError("ERR_REFRESH_TOKEN_EXPIRED", err.name);
   }
 };

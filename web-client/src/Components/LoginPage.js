@@ -1,14 +1,28 @@
 import styled from "styled-components";
-import { useState } from "react";
-import { login, submitOtp } from "../utils/apiCalls";
+import { useState, useEffect } from "react";
+import { login, verifyOTP } from "../utils/apiCalls/auth";
 import { useDispatch } from "react-redux";
-import { authEnd } from "../redux/authSlice";
+import { loginSuccess } from "../redux/actions";
+
 const LoginPage = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [cardHeight, setCardHeight] = useState("350px");
+  const [buttonText, setButtonText] = useState("Get OTP");
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isButtonDisabled) {
+      const id = setTimeout(() => {
+        setButtonText("Resend OTP");
+        setIsButtonDisabled(false);
+      }, 60 * 1000);
+      return () => clearTimeout(id);
+    }
+  }, [isButtonDisabled]);
 
   const removeNonNumeric = (field, e) => {
     const enteredText = e.target.value.replace(/[^0-9]/, "");
@@ -17,19 +31,32 @@ const LoginPage = () => {
   };
   const getOtpHandler = async (e) => {
     e.preventDefault();
-    console.log("clicked");
-    const status = await login(phoneNumber);
-    if (status === 200) {
+    setError("");
+    const response = await login(phoneNumber);
+    console.log(response);
+    if (response.ok) {
       setCardHeight("600px");
+      setIsButtonDisabled(true);
       setTimeout(() => {
         setIsOtpSent(true);
       }, 500);
+
+      setButtonText("Resend OTP");
+    } else {
+      console.log(response.error);
+      setError(response.error.code);
     }
   };
   const submitOtpHandler = async (e) => {
     e.preventDefault();
-    const { user } = await submitOtp({ phoneNumber, otp });
-    dispatch(authEnd(user));
+    setError("");
+    const response = await verifyOTP(phoneNumber, otp);
+    if (response.ok) {
+      dispatch(loginSuccess(response.data));
+    } else {
+      console.log(response.error);
+      setError(response.error.code);
+    }
   };
   return (
     <Container>
@@ -46,9 +73,9 @@ const LoginPage = () => {
               value={phoneNumber}
             />
           </div>
-          <button className="actionButton" type="submit" disabled={isOtpSent}>
-            Get OTP
-          </button>
+          <StyledButton type="submit" disabled={isButtonDisabled}>
+            {buttonText}
+          </StyledButton>
         </form>
         {isOtpSent && (
           <form className="form" onSubmit={submitOtpHandler}>
@@ -68,6 +95,7 @@ const LoginPage = () => {
             </button>
           </form>
         )}
+        {error && <span className="error">{error}</span>}
       </Card>
     </Container>
   );
@@ -131,6 +159,10 @@ const Container = styled.div`
   .actionButton:hover {
     background-color: #00af9c;
   }
+
+  .error {
+    color: red;
+  }
 `;
 
 const Card = styled.div`
@@ -145,4 +177,17 @@ const Card = styled.div`
   margin-top: 100px;
   transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
   height: ${(props) => props.height};
+`;
+
+const StyledButton = styled.button`
+  background-color: ${(props) => (props.disabled ? "gray" : "#065051")};
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  margin-top: 20px;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+
+  &:hover {
+    background-color: ${(props) => (props.disabled ? "gray" : "#00af9c")};
+  }
 `;

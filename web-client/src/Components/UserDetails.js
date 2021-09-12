@@ -10,7 +10,7 @@ import { storage as firebaseStorage } from "../utils/firebase";
 import { uploadBytes, getDownloadURL } from "firebase/storage";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../redux/authSlice";
-import { updateDetails } from "../utils/apiCalls";
+import { updateUserDetails } from "../utils/apiCalls/user.js";
 
 const colorizeIcon = (Component) => {
   return <Component style={{ color: "#B1B3B5" }} />;
@@ -32,7 +32,7 @@ const UserDetails = ({ closeUserDetails }) => {
     );
     uploadBytes(storageRef, imageRef.current.files[0]).then((snapshot) => {
       getDownloadURL(storageRef).then(async (url) => {
-        const updatedUser = await updateDetails({ photoURL: url });
+        const updatedUser = await updateUserDetails({ photoURL: url });
         dispatch(updateUser(updatedUser));
       });
     });

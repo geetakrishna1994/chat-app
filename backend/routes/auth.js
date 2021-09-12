@@ -6,11 +6,7 @@ const router = express.Router();
 
 router.post("/login", asyncHandler(authController.login));
 
-router.post(
-  "/verify-otp",
-  verifyTokenMiddleware,
-  asyncHandler(authController.verifyOTP)
-);
+router.post("/verify-otp", asyncHandler(authController.verifyOTP));
 
 router.get("/new-token", authController.getNewToken);
 

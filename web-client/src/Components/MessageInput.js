@@ -3,18 +3,39 @@ import IconButton from "@material-ui/core/IconButton";
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import SendIcon from "@material-ui/icons/Send";
 import { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+import { sendMessage } from "../redux/actions";
 
 const colorizeIcon = (Component) => {
   return <Component style={{ color: "#B1B3B5" }} />;
 };
 const MessageInput = () => {
   const messageInputRef = useRef("");
-
+  const authUserId = useSelector((state) => state.auth.user._id);
+  const conversationId = useSelector(
+    (state) => state.conversations.currentConversation
+  );
+  const dispatch = useDispatch();
   const sendMessageHandler = (e) => {
     e.preventDefault();
     const enteredText = messageInputRef.current.value.trim();
     if (enteredText) {
-      console.log(enteredText);
+      const message = {
+        _id: uuidv4(),
+        content: enteredText,
+        senderId: authUserId,
+        conversationId: conversationId,
+        createdAt: Date.now(),
+        status: "pending",
+      };
+      dispatch(
+        sendMessage({
+          conversationId,
+          message,
+        })
+      );
+
       messageInputRef.current.value = "";
     }
   };

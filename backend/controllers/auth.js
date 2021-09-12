@@ -13,18 +13,13 @@ import {
   verifyRefreshToken,
 } from "../utilities/token.js";
 import { generateKeys } from "../utilities/encryption.js";
-
+import { _populateUser } from "./user.js";
+import { generateOTP, sendOTP } from "../utilities/otp.js";
 /**
  *
  * @param {length of the required otp} length
  * @returns random number of given length
  */
-const generateOTP = (length) => {
-  const min = parseInt(1 + "0".repeat(length - 1));
-  const multiplier = parseInt(9 + "0".repeat(length - 1));
-  const otp = Math.floor(Math.random() * multiplier) + min;
-  return otp;
-};
 
 /**
  *
@@ -51,7 +46,8 @@ export const login = async (req, res) => {
 
   const { phoneNumber } = data;
   const otp = generateOTP(process.env.OTP_LENGTH);
-  const accessToken = createAccessToken(phoneNumber);
+  await sendOTP(phoneNumber, otp);
+
   const refreshToken = createRefreshToken(phoneNumber);
   // ~~~~~~ update in Auth collection ~~~~~~ //
 
@@ -66,13 +62,8 @@ export const login = async (req, res) => {
     });
   }
   console.log(otp);
-  console.log(accessToken);
-  res.status(200).send({
-    phoneNumber,
-    accessToken,
-    refreshToken,
-    otp,
-  });
+
+  res.status(200).send("ok");
 };
 
 export const verifyOTP = async (req, res) => {
@@ -90,12 +81,12 @@ export const verifyOTP = async (req, res) => {
   }
 
   const { phoneNumber, otp } = req.body;
-  if (phoneNumber !== req.phoneNumber)
+  const authUser = await Auth.findOne({ phoneNumber });
+  if (phoneNumber.toString() !== authUser.phoneNumber.toString())
     throw new AuthenticationError(
-      "ERR_INVALID_TOKEN",
+      "ERR_INVALID_PHONE_NUMBER",
       "The access token is not for the given phoneNumber"
     );
-  const authUser = await Auth.findOne({ phoneNumber });
   if (!authUser)
     throw new InvalidDataError(
       "phoneNumber",
@@ -114,16 +105,25 @@ export const verifyOTP = async (req, res) => {
       "Otp is not valid. Please enter correct otp"
     );
 
+  const accessToken = createAccessToken(phoneNumber);
   const photoURL = `https://avatars.dicebear.com/api/jdenticon/${phoneNumber}.svg`;
   let user = await User.findOne({ phoneNumber });
-  if (!user)
+  if (!user) {
     user = await User.create({
       phoneNumber,
       photoURL,
       status: "online",
     });
-
-  return res.status(200).json(user);
+  } else {
+    const io = req.app.io;
+    const socketMap = req.app.socketMap;
+    await _populateUser(user, io, socketMap);
+  }
+  return res.status(200).json({
+    accessToken: accessToken,
+    refreshToken: authUser.refreshToken,
+    user: user.toJSON(),
+  });
 };
 
 export const getNewToken = (req, res) => {

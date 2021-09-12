@@ -12,9 +12,7 @@ const tokenMiddleware = (req, res, next) => {
   const [type, token] = authHeader.split(" ");
   if (type !== "Bearer")
     throw new AuthenticationError("ERR_TOKEN_TYPE", "Bearer token is required");
-  console.log(token);
   const data = verifyAccessToken(token);
-  console.log(data);
   req.phoneNumber = data.phoneNumber;
   next();
 };

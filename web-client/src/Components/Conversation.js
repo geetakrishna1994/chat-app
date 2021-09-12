@@ -1,24 +1,76 @@
 import styled from "styled-components";
 import Avatar from "./Avatar";
-const Conversation = () => {
+import { useSelector } from "react-redux";
+import { getTimeString } from "../utils/date";
+import { useDispatch } from "react-redux";
+import { setCurrentConversation } from "../redux/conversationSlice";
+import MessageStatus from "./MessageStatus";
+
+const Conversation = ({ conversation }) => {
+  let displayPicture, displayName;
+  const contacts = useSelector((state) => state.contacts.contacts);
+  const authUser = useSelector((state) => state.auth.user);
+  // ====================================================== //
+  // ======= get photo and name of each conversation ====== //
+  // ====================================================== //
+  if (conversation.conversationId.conversationType === "private") {
+    const recipient = contacts.find(
+      (con) => con._id === conversation.recipientId
+    );
+    displayPicture = recipient.photoURL;
+    displayName = recipient.displayName;
+  } else if (conversation.conversationId.conversationType === "group") {
+    displayPicture = conversation.conversationId.groupPhotoURL;
+    displayName = conversation.conversationId.groupName;
+  } else {
+    displayPicture =
+      "https://images.unsplash.com/photo-1630261234647-ac2d4b955f59?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80";
+    displayName = "Regina Phalange";
+  }
+
+  const messages = conversation.conversationId.messages;
+  const unreadCount =
+    messages.length > 0
+      ? messages.reduce((prev, curr) => {
+          if (
+            curr.senderId.toString() !== authUser._id.toString() &&
+            curr.readBy.findIndex((r) => {
+              return r.userId.toString() === authUser._id.toString();
+            }) === -1
+          )
+            return parseInt(prev) + 1;
+          else return parseInt(prev);
+        }, 0)
+      : 0;
+
+  const lastMessage = messages[messages.length - 1];
+  const dispatch = useDispatch();
+  const openConversationHandler = () => {
+    dispatch(setCurrentConversation(conversation.conversationId._id));
+  };
+  const ownMessage = lastMessage?.senderId === authUser._id;
   return (
-    <ConversationContainer>
-      <Avatar
-        src="https://images.unsplash.com/photo-1630261234647-ac2d4b955f59?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-        size="50px"
-        mr="10px"
-      />
+    <ConversationContainer onClick={openConversationHandler}>
+      <Avatar src={displayPicture} size="50px" mr="10px" />
       <RightContainer>
         <div>
-          <span className="name">Regina Phelange</span>
-          <span className="time">9:00</span>
-          <span className="message">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ab id eos,
-            rerum mollitia voluptas labore delectus omnis voluptates quos nulla
-            similique nobis porro consectetur aperiam! A quam est consectetur
-            expedita!
+          <span className="name">{displayName}</span>
+          <span className="time">
+            {getTimeString(
+              lastMessage?.createdAt || conversation.conversationId.createdAt
+            )}
           </span>
-          <span className="count">1</span>
+          <span className="content-container">
+            <span>
+              {lastMessage && ownMessage && (
+                <MessageStatus message={lastMessage} />
+              )}
+            </span>
+            <span className="message">{lastMessage?.content}</span>
+          </span>
+          <span className={`count ${unreadCount === 0 ? "invisible" : ""}`}>
+            {unreadCount}
+          </span>
         </div>
       </RightContainer>
     </ConversationContainer>
@@ -49,6 +101,7 @@ const RightContainer = styled.div`
   color: #b1b3b5;
   display: flex;
   align-items: center;
+  width: 100%;
 
   & > div {
     flex: 1;
@@ -66,6 +119,16 @@ const RightContainer = styled.div`
     color: #00af9c;
     text-align: center;
     justify-self: center;
+    font-size: x-small;
+  }
+
+  & .content-container {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: flex-start;
   }
 
   & .message {
@@ -75,6 +138,8 @@ const RightContainer = styled.div`
     font-weight: 300;
     font-style: italic;
     font-size: 0.8rem;
+    /* display: flex; */
+    align-items: center;
   }
 
   & .count {
@@ -88,5 +153,9 @@ const RightContainer = styled.div`
     justify-self: center;
     align-self: center;
     font-size: 0.75rem;
+  }
+
+  .invisible {
+    visibility: hidden;
   }
 `;

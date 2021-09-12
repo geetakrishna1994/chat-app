@@ -1,22 +1,59 @@
 import styled from "styled-components";
 import Avatar from "./Avatar";
 import IconButton from "@material-ui/core/IconButton";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import AddIcon from "@material-ui/icons/Add";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import GroupAddIcon from "@material-ui/icons/GroupAdd";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import { useState } from "react";
+import AddUserModal from "./AddUserModal";
 import { useSelector } from "react-redux";
+import { createPortal } from "react-dom";
+import CreateGroupModal from "./CreateGroupModal";
+import { logout } from "../redux/actions";
+import { useDispatch } from "react-redux";
 const colorizeIcon = (Component) => {
-  return <Component style={{ color: "#B1B3B5" }} />;
+  let size = "20px";
+  if (Component === GroupAddIcon) size = "22px";
+  return <Component style={{ color: "#B1B3B5", fontSize: size }} />;
 };
 
 const SidebarHeader = ({ openUserDetails }) => {
+  const dispatch = useDispatch();
+  const [isPersonAddModalOpen, setIsPersonAddModalOpen] = useState(false);
+  const [isGroupAddModalOpen, setIsGroupAddModalOpen] = useState(false);
+  const openPersonModal = () => setIsPersonAddModalOpen(true);
+  const closePersonModal = () => setIsPersonAddModalOpen(false);
+  const openGroupModal = () => setIsGroupAddModalOpen(true);
+  const closeGroupModal = () => setIsGroupAddModalOpen(false);
+
   const authUser = useSelector((state) => state.auth.user);
+
   return (
-    <HeaderContainer>
-      <Avatar src={authUser.photoURL} onClick={openUserDetails} />
-      <div className="userName">{authUser.displayName}</div>
-      <IconButton>{colorizeIcon(AddIcon)}</IconButton>
-      <IconButton>{colorizeIcon(MoreVertIcon)}</IconButton>
-    </HeaderContainer>
+    <>
+      {isPersonAddModalOpen &&
+        createPortal(
+          <AddUserModal onClose={closePersonModal} />,
+          document.getElementById("root-modal")
+        )}
+      {isGroupAddModalOpen &&
+        createPortal(
+          <CreateGroupModal onClose={closeGroupModal} />,
+          document.getElementById("root-modal")
+        )}
+      <HeaderContainer>
+        <Avatar src={authUser.photoURL} onClick={openUserDetails} />
+        <div className="userName">{authUser.displayName}</div>
+        <IconButton onClick={openPersonModal}>
+          {colorizeIcon(PersonAddIcon)}
+        </IconButton>
+        <IconButton onClick={openGroupModal}>
+          {colorizeIcon(GroupAddIcon)}
+        </IconButton>
+        <IconButton onClick={() => dispatch(logout())}>
+          {colorizeIcon(ExitToAppIcon)}
+        </IconButton>
+      </HeaderContainer>
+    </>
   );
 };
 

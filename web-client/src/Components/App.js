@@ -2,11 +2,13 @@ import styled from "styled-components";
 import Sidebar from "./Sidebar";
 import Body from "./Body";
 import { useLayoutEffect } from "react";
-import { getUser } from "../utils/apiCalls";
-import { authStart, authEnd } from "../redux/authSlice";
+import { getUser } from "../utils/apiCalls/user.js";
+import { authStart } from "../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoginPage from "./LoginPage";
 import { getAuth, signInAnonymously } from "firebase/auth";
+import { loginSuccess, loginFail } from "../redux/actions";
+import { getRefreshToken } from "../utils/token";
 const App = () => {
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.auth.user);
@@ -14,10 +16,15 @@ const App = () => {
 
   //* runs only at the initial load to get the user
   useLayoutEffect(() => {
-    dispatch(authStart());
-    getUser().then((user) => dispatch(authEnd(user)));
-    const auth = getAuth();
-    signInAnonymously(auth);
+    if (getRefreshToken()) {
+      dispatch(authStart());
+      getUser().then((user) => {
+        if (user) dispatch(loginSuccess(user));
+        else dispatch(loginFail());
+      });
+      const auth = getAuth();
+      signInAnonymously(auth);
+    }
   }, [dispatch]);
 
   return (

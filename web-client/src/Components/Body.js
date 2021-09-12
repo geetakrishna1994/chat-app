@@ -3,23 +3,42 @@ import BodyHeader from "./BodyHeader";
 import MessageInput from "./MessageInput";
 import Message from "./Message";
 import { useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
+
 const Body = () => {
   const focusRef = useRef();
   useEffect(() => {
-    focusRef.current.scrollIntoView({ behavior: "smooth" });
-  }, []);
+    if (focusRef.current)
+      focusRef.current.scrollIntoView({ behavior: "smooth" });
+  });
+
+  const authUserId = useSelector((state) => state.auth.user._id);
+  const currentConversation = useSelector((state) =>
+    state.conversations.conversations.find(
+      (c) => c.conversationId._id === state.conversations.currentConversation
+    )
+  );
+
   return (
     <BodyContainer>
-      <BodyHeader />
-      <MessageContainer>
-        <Message />
-        <Message own={true} />
-        <Message />
-        <Message own={true} />
-        <Message />
-        <Message own={true} ref={focusRef} />'
-      </MessageContainer>
-      <MessageInput />
+      {currentConversation && (
+        <>
+          <BodyHeader />
+          <MessageContainer>
+            <>
+              {currentConversation?.conversationId?.messages.map((m, index) => (
+                <Message
+                  key={m._id}
+                  own={m.senderId === authUserId}
+                  message={m}
+                />
+              ))}
+              <div ref={focusRef}></div>
+            </>
+          </MessageContainer>
+          <MessageInput />
+        </>
+      )}
     </BodyContainer>
   );
 };

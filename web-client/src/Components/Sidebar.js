@@ -4,13 +4,32 @@ import SidebarSearch from "./SidebarSearch";
 import Conversation from "./Conversation";
 import UserDetails from "./UserDetails";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import User from "./User";
+
+const sort = (a, b) => {
+  let aDate, bDate;
+  if (a.conversationId.messages.length === 0)
+    aDate = new Date(a.conversationId.createdAt);
+  else {
+    aDate = new Date(a.conversationId.messages.at(-1).createdAt);
+  }
+  if (b.conversationId.messages.length === 0)
+    bDate = new Date(b.conversationId.createdAt);
+  else {
+    bDate = new Date(b.conversationId.messages.at(-1).createdAt);
+  }
+  return bDate - aDate;
+};
 
 const Sidebar = ({ userDetails = false }) => {
   const [isUserDetailsOpen, setUserDetailsOpen] = useState(userDetails);
   const [searchedUser, setSearchedUser] = useState(null);
   const openUserDetails = () => setUserDetailsOpen(true);
   const closeUserDetails = () => setUserDetailsOpen(false);
+  const conversationList = useSelector(
+    (state) => state.conversations.conversations
+  ).slice();
   const onSearchHandler = (user) => {
     setSearchedUser(user);
   };
@@ -25,7 +44,10 @@ const Sidebar = ({ userDetails = false }) => {
             searchedUser={searchedUser}
           />
           <Conversations>
-            <Conversation />
+            {conversationList.sort(sort).map((c) => (
+              <Conversation conversation={c} key={c.conversationId._id} />
+            ))}
+
             {searchedUser && <User user={searchedUser} />}
           </Conversations>
         </>

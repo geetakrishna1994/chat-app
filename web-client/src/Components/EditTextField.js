@@ -2,7 +2,7 @@ import styled from "styled-components";
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import DoneIcon from "@material-ui/icons/Done";
-import { updateDetails } from "../utils/apiCalls";
+import { updateUserDetails } from "../utils/apiCalls/user.js";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../redux/authSlice";
 import { useState } from "react";
@@ -19,8 +19,8 @@ const EditTextField = ({ textValue, fieldName }) => {
   };
   const stopEditing = async () => {
     setIsEditing(() => false);
-    console.log(enteredText);
-    const updatedUser = await updateDetails({
+
+    const updatedUser = await updateUserDetails({
       [fieldName]: enteredText.trim(),
     });
     dispatch(updateUser(updatedUser));

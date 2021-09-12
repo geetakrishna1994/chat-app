@@ -2,7 +2,7 @@ import styled from "styled-components";
 import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import { useState } from "react";
-import { searchUser } from "../utils/apiCalls";
+// import { searchUser } from "../utils/apiCalls";
 const colorizeIcon = (Component) => {
   return <Component style={{ fontSize: 16, color: "#B1B3B5" }} />;
 };
@@ -18,9 +18,9 @@ const SidebarSearch = ({ onSearch, searchedUser }) => {
       enteredText.trim().length === 10 &&
       enteredText.trim().match(/[^0-9]/) === null
     ) {
-      const user = await searchUser(enteredText.trim());
-      console.log(user);
-      onSearch(user);
+      // const user = await searchUser(enteredText.trim());
+      // console.log(user);
+      // onSearch(user);
     }
   };
   return (

@@ -9,6 +9,12 @@ router.get("/", tokenMiddleware, asyncHandler(userController.getUserDetails));
 
 router.get("/:phoneNumber", asyncHandler(userController.getUserByPhoneNumber));
 
+router.put(
+  "/",
+  tokenMiddleware,
+  asyncHandler(userController.updateUserDetails)
+);
+
 router.get("/conversations", asyncHandler(userController.getAllConversations));
 
 export default router;

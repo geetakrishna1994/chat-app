@@ -6,26 +6,80 @@ Content-Type: application/json
 }
 
 ###
-post http://localhost:8800/auth/verify-otp
+post http://localhost:8800/auth/login
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzA5OTY0MjgsImV4cCI6MTYzMDk5NzQyOH0.KItLdsuSHW9A07vPUfuHe66AsF6afIJnS_4yzN1TIX8
 
 {
-    "phoneNumber" : "9952050503",
-    "otp" : "2172"
+    "phoneNumber" : "9989502003"
 }
 
 ###
-get http://localhost:8800/auth/new-token?refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzEwMzYyNjksImV4cCI6MTYzMTAzNjI5OX0.4wNHd7yJwIXTLxID9nH6snpXqiR_ltK_sdAHKkFTqkI
+post http://localhost:8800/auth/verify-otp
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzExMTU0NDksImV4cCI6MTYzMTExNjQ0OX0.q4lqADB2d33QqsHHsSKloi40xyf7dNsQWy-JoiwPbI4
+
+{
+    "phoneNumber" : "9952050503",
+    "otp" : "6872"
+}
+
+###
+post http://localhost:8800/auth/verify-otp
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5ODk1MDIwMDMiLCJpYXQiOjE2MzExMTU1MzEsImV4cCI6MTYzMTExNjUzMX0.ksJTUTkgW_yxox5e6vFwq_oyBthrUZMvnGYCXrNBMw4
+
+{
+    "phoneNumber" : "9989502003",
+    "otp" : "8832"
+}
+
+###
+get http://localhost:8800/auth/new-token?refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzExNzE4NjQsImV4cCI6MTYzMTE3MTg5NH0.qaVasvBuL5dpEHJb-dsABaR4nU6lTSlZlDW9rctKflk
 
 ###
 
 get http://localhost:8800/user/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzEwMzcwNTIsImV4cCI6MTYzMTAzODA1Mn0.5jxnWD1TUGNWoSTnbu4NUVekSZ_g47_ZyYNYRnWRnbw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzExODAyOTcsImV4cCI6MTYzMTE4MjA5N30.ZzxIOVG_RUlE7k6A_QtX8J_hoWk-8AYA-WOSvEQC6HA
 
 ###
 
-get http://localhost:8800/user/9952050503
+get http://localhost:8800/user/9952050501
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzEwMzcwNTIsImV4cCI6MTYzMTAzODA1Mn0.5jxnWD1TUGNWoSTnbu4NUVekSZ_g47_ZyYNYRnWRnbw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzExMTg0OTIsImV4cCI6MTYzMTExOTQ5Mn0.952-ESNKMRTWkpjrHMvJTUKfgyetIUouStFby0oigeg
+
+###
+post http://localhost:8800/conversation/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzExMTU0NDksImV4cCI6MTYzMTExNjQ0OX0.q4lqADB2d33QqsHHsSKloi40xyf7dNsQWy-JoiwPbI4
+
+{
+    "users" : ["61367fe3e00f3fa3fb922bdf", "6138d922ff00a8f64b9b48eb"],
+    "conversationType" : "private",
+    "sender" : "61367fe3e00f3fa3fb922bdf"
+}
+
+###
+post http://localhost:8800/conversation/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzExMTU0NDksImV4cCI6MTYzMTExNjQ0OX0.q4lqADB2d33QqsHHsSKloi40xyf7dNsQWy-JoiwPbI4
+
+{
+    "users" : ["61367fe3e00f3fa3fb922bdf", "6138d922ff00a8f64b9b48eb"],
+    "conversationType" : "group",
+    "sender" : "61367fe3e00f3fa3fb922bdf",
+    "groupName" : "group1",
+    "groupPhotoURL" : "https://avatars.dicebear.com/api/identicon/group1.svg"
+}
+
+###
+
+post http://localhost:8800/message/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Ijk5NTIwNTA1MDMiLCJpYXQiOjE2MzExMTk1NDMsImV4cCI6MTYzMTIwNTk0M30.RGWsSwcoH3GI7fxmcAmXt6g4exlm1sGAet3xdbC1NLE
+
+{
+    "conversationId" : "6138db5427b7c9aa00b23bbf",
+    "content" : "message create test 2",
+    "senderId" : "61367fe3e00f3fa3fb922bdf"
+}

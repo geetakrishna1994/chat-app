@@ -1,23 +1,38 @@
 import styled from "styled-components";
-import { forwardRef } from "react";
-
-const Message = forwardRef(({ own }, ref) => {
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { markMessageRead } from "../redux/actions";
+import MessageStatus from "./MessageStatus";
+const Message = ({ own, message }) => {
+  const authUserId = useSelector((state) => state.auth.user._id);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (
+      message.readBy?.findIndex((r) => r.userId === authUserId) === -1 &&
+      message.senderId !== authUserId
+    ) {
+      dispatch(markMessageRead(message._id));
+    }
+  }, [authUserId, message.readBy, message.senderId, message._id, dispatch]);
   return (
-    <MessageContainer own={own} ref={ref}>
-      <span className="content">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ratione nulla
-        ipsam eius, dolore repudiandae dicta iure iste eum doloremque. Sapiente
-        reiciendis cupiditate illum. Debitis voluptatum doloribus aperiam vero?
-        Reprehenderit, id. dasfasagas fasfasfggf afsagag fsafgasgag dasfnsanf
-        asfnsafna asnfasjnfa sfnsfsd asnfasf faf fafawe fe
-      </span>
+    <MessageContainer own={own}>
+      <span className="content">{message.content}</span>
       <span className="meta">
-        <span>11:06 pm</span>
-        <span>Read</span>
+        <span>
+          {new Date(message.createdAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </span>
+        {own && (
+          <span>
+            <MessageStatus message={message} />
+          </span>
+        )}
       </span>
     </MessageContainer>
   );
-});
+};
 
 export default Message;
 
@@ -36,9 +51,13 @@ const MessageContainer = styled.div`
   margin-bottom: 20px;
   & .content {
     align-self: flex-start;
+    overflow-wrap: break-word;
+    width: 100%;
   }
   & .meta {
     align-self: flex-end;
     font-size: 0.6rem;
+    display: flex;
+    align-items: center;
   }
 `;

@@ -16,4 +16,5 @@ const StyledImage = styled.img.attrs((props) => ({
   object-fit: cover;
   margin-right: ${(props) => props.mr};
   cursor: pointer;
+  border: none;
 `;

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import Message from "./Message.js";
 const Schema = mongoose.Schema;
 
 const userSchema = Schema(
@@ -37,5 +37,14 @@ const userSchema = Schema(
   },
   { timestamps: true }
 );
+
+userSchema.virtual("contacts", {
+  ref: "User",
+  localField: "conversations.recipientId",
+  foreignField: "_id",
+});
+
+userSchema.set("toObject", { virtuals: true });
+userSchema.set("toJSON", { virtuals: true });
 
 export default mongoose.model("User", userSchema);
