@@ -22,7 +22,7 @@ const MessageStatus = ({ message }) => {
   if (read)
     return (
       <div>
-        <DoneAllIcon style={{ color: "blue", fontSize: "16px" }} />
+        <DoneAllIcon style={{ color: "#34B7F1", fontSize: "16px" }} />
       </div>
     );
   else if (delivered)

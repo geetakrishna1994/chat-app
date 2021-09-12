@@ -129,7 +129,7 @@ const CreateGroupModal = ({ onClose, conversation }) => {
             </div>
           ))}
         </Friends>
-        <button type="submit">
+        <button className="button" type="submit">
           {conversation ? "Update" : "Create"} Group
         </button>
       </Overlay>
@@ -154,7 +154,7 @@ const Overlay = styled.form`
   left: 40%;
   width: 30%;
 
-  background-color: #06505133;
+  background-color: #065051;
   padding: 10px;
   z-index: 10;
   display: flex;
@@ -173,7 +173,7 @@ const Overlay = styled.form`
   .listItem {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid #065051;
+    border-bottom: 1px solid white;
     padding: 10px;
     align-items: center;
   }
@@ -186,6 +186,21 @@ const Overlay = styled.form`
   .phone {
     font-size: x-small;
     font-style: italic;
+  }
+
+  .button {
+    padding: 10px;
+    margin-top: 10px;
+    background: white;
+    border: none;
+    border-radius: 10px;
+    color: #065051;
+    cursor: pointer;
+  }
+
+  .button:hover {
+    background: #00af9c;
+    color: white;
   }
 `;
 
@@ -201,7 +216,7 @@ const StyledInput = styled.input`
   flex-shrink: 0;
   margin-top: 10px;
 
-  border-bottom: 1px solid #065051;
+  border-bottom: 1px solid white;
   &::placeholder {
     color: #ffffff80;
   }
@@ -211,7 +226,7 @@ const Friends = styled.div`
   display: flex;
   flex-direction: column;
   width: 50%;
-  border: 1px solid #065051;
+  border: 1px solid white;
   padding: 10px;
   margin-top: 10px;
   color: white;
