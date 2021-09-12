@@ -9,6 +9,8 @@ export const generateOTP = (length) => {
 };
 
 export const sendOTP = async (phoneNumber, otp) => {
+  console.log("sinside send otp function");
+  console.log("api key value : ", process.env.FAST_2_SMS_API_KEY);
   const response = await axios.request({
     method: "POST",
     url: "https://www.fast2sms.com/dev/bulkV2",
