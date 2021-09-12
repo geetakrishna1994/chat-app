@@ -12,7 +12,7 @@ const socketHandler = (io, socketMap) => {
       socket.userId = user._id.toString();
       next();
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       next(err);
     }
   });
