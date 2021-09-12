@@ -27,6 +27,9 @@ export const updateUserDetails = async (req, res) => {
     },
     { new: true }
   );
+  req.io
+    .to(req.phoneNumber.toString())
+    .emit("contact/update", updatedUser.toJson());
   res.status(200).json(updatedUser);
 };
 
