@@ -28,6 +28,7 @@ import { generateOTP, sendOTP } from "../utilities/otp.js";
  * creates otp and tokens and sends back the response
  */
 export const login = async (req, res) => {
+  console.log("inside auth route");
   const data = req.body;
 
   const validationResult = loginSchema.validate(data);
