@@ -47,6 +47,7 @@ export const login = async (req, res) => {
 
   const { phoneNumber } = data;
   const otp = generateOTP(process.env.OTP_LENGTH);
+  console.log(otp);
   await sendOTP(phoneNumber, otp);
 
   const refreshToken = createRefreshToken(phoneNumber);
